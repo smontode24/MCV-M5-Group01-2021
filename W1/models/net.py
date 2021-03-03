@@ -4,13 +4,14 @@ class RandomNet:
     def __init__(self, dropout_prob=0.5):
         super().__init__()
         
-        # Block 1
+        # Input block
         self.conv1 = nn.Conv2D(3, 32, kernel_size=3, stride=2, padding=1, use_bias=False)
         self.bn1 = nn.BatchNorm2d(32)
         
         self.conv2 = nn.Conv2D(32, 32, kernel_size=3, stride=1, padding=1, use_bias=False)(x)
         self.bn2 = nn.BatchNorm2d(32)(x)
 
+        # Residual block 1
         self.conv2_residual = nn.Conv2D(32, 64, kernel_size=3, stride=2, padding=1, use_bias=False, use_bias=False)(x)
         self.bn2_residual = nn.BatchNorm2d(64)
 
@@ -19,10 +20,10 @@ class RandomNet:
         self.conv4 = nn.Conv2D(64, 64, kernel_size=3, stride=1, padding=1, use_bias=False)
         self.bn4 = nn.BatchNorm2d(64)
 
+        # Residual block 2
         self.conv4_residual = nn.Conv2D(64, 128, kernel_size=3, stride=2, padding=1, use_bias=False)(x)
         self.bn4_residual = nn.BatchNorm2d(128)
 
-        # Block 3
         self.conv5 = nn.Conv2D(64, 128, kernel_size=3, stride=1, padding=1, use_bias=False)
         self.bn5 = nn.BatchNorm2d(128)
         self.conv6 = nn.Conv2D(128, 128, kernel_size=3, stride=1, padding=1, use_bias=False)
@@ -33,7 +34,6 @@ class RandomNet:
         self.conv8 = nn.Conv2D(128, kernel_size=3, stride=2, padding=1, use_bias=False)
         self.bn8 = nn.BatchNorm2d(128)
 
-        # Block 13
         self.conv9 = nn.Conv2D(128, kernel_size=3, stride=1, padding=1, use_bias=False)
         self.conv10 = nn.Conv2D(256, kernel_size=3, stride=2, padding=1, use_bias=False)
         self.bn10 = nn.BatchNorm2d(256)
