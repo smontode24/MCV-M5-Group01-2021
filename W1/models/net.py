@@ -62,7 +62,7 @@ class RandomNet(nn.Module):
                 if m.bias is not None:
                     m.bias.data.zero_()
 
-    def __forward__(self, x):
+    def forward(self, x):
         # Input block
         x = self.conv1(x)
         x = self.bn1(x)
