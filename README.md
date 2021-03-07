@@ -13,9 +13,9 @@
 - [x] Form groups (reusing M3 group)
 - [x] Install and setup the development framework.
 - [x] Set Up collaborative tools.
-- [ ] Understand Pytorch framework.
+- [x] Understand Pytorch framework.
 - [x] Implement Image Classification network from M3 in Pytorch
-- [ ] Compute loss graphs and compare them with yours from Keras
-- [ ] Compute accuracy graphs and compare them with yours from Keras
+- [x] Compute loss graphs and compare them with yours from Keras
+- [x] Compute accuracy graphs and compare them with yours from Keras
 
 Overleaf link: https://www.overleaf.com/read/xtkctxszqfqg
