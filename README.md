@@ -19,4 +19,5 @@
 - [x] Compute accuracy graphs and compare them with yours from Keras
 
 Slides Week 1: https://docs.google.com/presentation/d/1xgQiWb_2IQZjdTTD_rbZH1rbwwo7qUqJ6vNxPe5OA4A
+
 Overleaf link: https://www.overleaf.com/read/xtkctxszqfqg
