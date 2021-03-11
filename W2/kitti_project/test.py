@@ -1,5 +1,7 @@
 from configurations import *
 from detectron2.config import get_cfg
+from detectron2.evaluation import COCOEvaluator, inference_on_dataset
+from detectron2.data import build_detection_test_loader
 
 def main(parser):
     cfg = get_cfg()
@@ -19,13 +21,15 @@ def main(parser):
     # Modify configuration to use certain model
     cfg = obtain_model_cfg(cfg, parser.model_name)
     cfg = prepare_dirs_experiment(cfg, parser.experiment_name)
+    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, cfg.experiment_name, cfg.checkpoint_name)  # path to the model we just trained
 
     trainer = DataAugmTrainer(cfg)
-    trainer = register_validation_loss_hook(trainer)
 
-    # Train...
-    trainer.resume_or_load(resume=False)
-    trainer.train()
+    # Test
+    evaluator = COCOEvaluator("", ("bbox", "segm"), False, output_dir="./output/")
+    val_loader = build_detection_test_loader(cfg, "")
+    res = inference_on_dataset(trainer.model, val_loader, evaluator)
+    print(res)
 
 def check_args():
     parser = argparse.ArgumentParser()
@@ -64,6 +68,13 @@ def check_args():
         type=str,
         default="resnet_fpn",
         help="model name",
+    )
+
+    parser.add_argument(
+        "--checkpoint_name", 
+        type=str,
+        default="",
+        help="name of checkpoint",
     )
 
     parser.add_argument(
