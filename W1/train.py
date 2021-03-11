@@ -130,9 +130,8 @@ def train(conf, device):
 
         # early stopping check
         if patience >= EA_PATIENCE:
-            # BREAK
             print(f"[END] Early stopping applied after {patience} epochs without decreasing validation loss.")
-            continue
+            break
 
 
     print("---------> END <---------")

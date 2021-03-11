@@ -126,6 +126,9 @@ if __name__ == "__main__":
     # we train the model
     model = load_checkpoint(conf).to(device)
 
+    print(sum(p.numel() for p in model.parameters())
+)
+
     # we test it
     test(model, conf, device)
 
