@@ -7,8 +7,15 @@
   <li>Sergio Montoya: sergio.montoyadepaco@e-campus.uab.cat </li>
 </ul>
 
+## Tasks W2 (from slides):
 
-## Tasks W1 (from slides):
+- [x] Get familiar with Detectron2 framework
+- [ ] Use object detection models in inference Faster R-CNN
+- [ ] Use object detection models in inference: RetinaNet
+- [ ] Train finetune Faster R-CNN on KITTI dataset
+- [ ] Write a report about state-of-the-art object detection
+
+## Tasks W1:
 
 - [x] Form groups (reusing M3 group)
 - [x] Install and setup the development framework.
