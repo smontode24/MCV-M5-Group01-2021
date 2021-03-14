@@ -5,12 +5,35 @@ import torch
 from detectron2.engine import HookBase
 from detectron2.data import build_detection_train_loader
 import detectron2.utils.comm as comm
+from detectron2.utils.logger import setup_logger
+from detectron2.evaluation import COCOEvaluator
+import os 
+
+class CustomDefaultTrainer(DefaultTrainer):
+    @classmethod
+    def build_evaluator(cls, cfg, dataset_name):
+        """
+        Returns:
+            DatasetEvaluator or None
+        It is not implemented by default.
+        """
+        return COCOEvaluator("kitti_val", tasks=["bbox",], distributed=True, output_dir=cfg.OUTPUT_DIR)
+
 
 class DataAugmTrainer(DefaultTrainer):
-  # Data augmentation
-  @classmethod
-  def build_train_loader(cls, cfg):
-      return build_detection_train_loader(cfg,
+    @classmethod
+    def build_evaluator(cls, cfg, dataset_name):
+        """
+        Returns:
+            DatasetEvaluator or None
+        It is not implemented by default.
+        """
+        return COCOEvaluator("kitti_val", tasks=["bbox",], distributed=True, output_dir=cfg.OUTPUT_DIR)
+
+    # Data augmentation
+    @classmethod
+    def build_train_loader(cls, cfg):
+        return build_detection_train_loader(cfg,
             mapper=DatasetMapper(cfg, is_train=True, augmentations=[
                 T.RandomBrightness(0.5, 2),
                 T.RandomContrast(0.5, 2),
@@ -35,44 +58,44 @@ class ValidationLoss(HookBase):
         self.step_num += 1
         
         if self.step_num % self.val_frequency == 0:
-          with torch.no_grad():
-              losses = 0
-              for i in range(self.val_steps_in_log):
-                data = next(self._loader)
-                print("validating")
-                loss_dict = self.trainer.model(data)
-                
-                losses += sum(loss_dict.values())
-                
-                assert torch.isfinite(losses).all(), loss_dict
-              losses = losses/self.val_steps_in_log
-              loss_dict_reduced = {"val_" + k: v.item() for k, v in 
+            with torch.no_grad():
+                losses = 0
+                for i in range(self.val_steps_in_log):
+                    data = next(self._loader)
+
+                    loss_dict = self.trainer.model(data)
+                    
+                    losses += sum(loss_dict.values())
+                    
+                    assert torch.isfinite(losses).all(), loss_dict
+                losses = losses/self.val_steps_in_log
+                loss_dict_reduced = {"val_" + k: v.item() for k, v in 
                                   comm.reduce_dict(loss_dict).items()}
-              losses_reduced = sum(loss for loss in loss_dict_reduced.values())
-              if comm.is_main_process():
-                  self.trainer.storage.put_scalars(total_val_loss=losses_reduced, 
+                losses_reduced = sum(loss for loss in loss_dict_reduced.values())
+                if comm.is_main_process():
+                    self.trainer.storage.put_scalars(total_val_loss=losses_reduced, 
                                                   **loss_dict_reduced)
-          self.step_num = 0
 
-
+            self.step_num = 0
+        
 
 def basic_configuration(cfg):
-    cfg.SOLVER.MAX_ITER = 300    # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
     cfg.SOLVER.STEPS = []        # do not decay learning rate
     cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
     return cfg
 
-def register_validation_loss_hook(trainer):
+def register_validation_loss_hook(cfg, trainer):
     val_loss = ValidationLoss(cfg)  
     trainer.register_hooks([val_loss])
     trainer._hooks = trainer._hooks[:-2] + trainer._hooks[-2:][::-1]
     return trainer
 
-def prepare_dirs_experiment(cfg, experiment_name):
+# NOT USED
+def prepare_dirs_experiment(cfg, experiment_name, split):
     experiment_path = os.path.join(cfg.OUTPUT_DIR, experiment_name)
     os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
     os.makedirs(experiment_path, exist_ok=True)
-    setup_logger(output=experiment_path, name="balloon_"+str(i))
+    setup_logger(output=experiment_path, name=f"cv_split_{split}")
 
     cfg["OUTPUT_DIR"] = experiment_path
     return cfg

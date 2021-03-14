@@ -1,35 +1,76 @@
 from configurations import *
+from models import obtain_model_cfg
 from detectron2.config import get_cfg
-from detectron2.evaluation import COCOEvaluator, inference_on_dataset
-from detectron2.data import build_detection_test_loader
+import argparse
+import os 
+from loaders import register_kitti_dataset
+from detectron2.checkpoint import DetectionCheckpointer
+from detectron2.engine import DefaultTrainer
+from detectron2.evaluation import inference_on_dataset
+from detectron2.evaluation import COCOEvaluator
+from new_heads import *
 
 def main(parser):
-    cfg = get_cfg()
+    # TODO: cross-validation???? -> NO
+    # Reproducible results
+    torch.manual_seed(0)
 
+    # load dataset
+    register_kitti_dataset()
+    print("Dataset loaded...")
+
+    cfg = get_cfg()
+    print(cfg)
     # Basic config
     cfg = basic_configuration(cfg)
-
-    # Add by parameter learning rate, etc
-    cfg.MODEL.BACKBONE.FREEZE_AT = parser.freeze_at # Where to freeze backbone layers to finetune
-    cfg.DATALOADER.NUM_WORKERS = parser.workers #
-    cfg.SOLVER.IMS_PER_BATCH = parser.batch_size
-    cfg.SOLVER.BASE_LR = cfg.lr  # pick a good LR
-    cfg.SOLVER.STEPS = []        # do not decay learning rate
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
-    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
-
+    print(cfg)
     # Modify configuration to use certain model
     cfg = obtain_model_cfg(cfg, parser.model_name)
-    cfg = prepare_dirs_experiment(cfg, parser.experiment_name)
-    cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, cfg.experiment_name, cfg.checkpoint_name)  # path to the model we just trained
+    print(cfg)
+    if parser.balanced_weights:
+        cfg = modify_head_balanced_weight_class(cfg)
+    
+    cfg.OUTPUT_DIR = f"/home/group01/W2_detectron2/{parser.experiment_name}"
+    if not os.path.exists(cfg.OUTPUT_DIR):
+        os.makedirs(cfg.OUTPUT_DIR)
 
-    trainer = DataAugmTrainer(cfg)
+    # SPECIFIC TO KITTI
+    cfg.DATASETS.TRAIN = ("kitti_train",)
+    #cfg.DATASETS.VAL = ("kitti_val",)
+    cfg.DATASETS.TEST = ("kitti_test", )#"kitti_val", "kitti_train")
+    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 8 # for kitti
 
-    # Test
-    evaluator = COCOEvaluator("", ("bbox", "segm"), False, output_dir="./output/")
-    val_loader = build_detection_test_loader(cfg, "")
-    res = inference_on_dataset(trainer.model, val_loader, evaluator)
-    print(res)
+    # TRAINING PARAMS
+    cfg.MODEL.BACKBONE.FREEZE_AT = parser.freeze_at # Where to freeze backbone layers to finetune
+    cfg.DATALOADER.NUM_WORKERS = parser.workers
+    cfg.SOLVER.IMS_PER_BATCH = parser.batch_size
+    #cfg.SOLVER.MAX_ITER = parser.max_steps
+    cfg.SOLVER.WARMUP_ITERS = 0 #0
+    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
+    #cfg.SOLVER.BASE_LR = parser.lr
+    #cfg.SOLVER.STEPS = [8000, 13000] # quick test
+
+    # CHECKPOINTS AND EVAL
+    cfg.TEST.EVAL_PERIOD = 1000
+    cfg.SOLVER.CHECKPOINT_PERIOD = 1000
+
+    trainer = CustomDefaultTrainer(cfg)
+    
+    #trainer = register_validation_loss_hook(cfg, trainer)
+    #trainer.build_hooks()
+
+    # Load...
+    trainer.resume_or_load(resume=True) # if true => load last checkpoint if available (and start training from there)
+
+    print("Checkpoint loaded...")
+    #training = COCOEvaluator("kitti_train", tasks=["bbox",], distributed=True, output_dir=os.path.join(cfg.OUTPUT_DIR, "eval_kitti_train"))
+    #validation = COCOEvaluator("kitti_val", tasks=["bbox",], distributed=True, output_dir=os.path.join(cfg.OUTPUT_DIR, "eval_kitti_val"))
+    testing = COCOEvaluator("kitti_test", tasks=["bbox",], distributed=True, output_dir=os.path.join(cfg.OUTPUT_DIR, "eval_kitti_test"))
+    evals = [testing, ]#[testing, validation, training]
+    DefaultTrainer.test(cfg, trainer.model, evaluators=evals)
+    print("Testing finished...")
+    #trainer.test()
+
 
 def check_args():
     parser = argparse.ArgumentParser()
@@ -43,13 +84,6 @@ def check_args():
     )
 
     parser.add_argument(
-        "--lr", 
-        type=float,
-        default=0.001,
-        help="learning rate",
-    )
-
-    parser.add_argument(
         "--batch_size", 
         type=int,
         default=4,
@@ -59,7 +93,7 @@ def check_args():
     parser.add_argument(
         "--workers", 
         type=int,
-        default=2,
+        default=4,
         help="batch_size",
     )
 
@@ -71,10 +105,10 @@ def check_args():
     )
 
     parser.add_argument(
-        "--checkpoint_name", 
-        type=str,
-        default="",
-        help="name of checkpoint",
+        "--balanced_weights", 
+        action="store_true",
+        default=False,
+        help="balance class imbalance",
     )
 
     parser.add_argument(

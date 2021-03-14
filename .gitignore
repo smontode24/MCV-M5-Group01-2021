@@ -1,4 +1,5 @@
-W1/germs/
-W1/isaac/
-W1/sergio/
+*/germs/
+*/isaac/
+*/sergio/
 */__pycache__/
+*/*/__pycache__/
