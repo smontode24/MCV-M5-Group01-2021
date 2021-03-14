@@ -10,10 +10,10 @@
 ## Tasks W2 (from slides):
 
 - [x] Get familiar with Detectron2 framework
-- [ ] Use object detection models in inference Faster R-CNN
-- [ ] Use object detection models in inference: RetinaNet
-- [ ] Train finetune Faster R-CNN on KITTI dataset
-- [ ] Write a report about state-of-the-art object detection
+- [X] Use object detection models in inference Faster R-CNN
+- [X] Use object detection models in inference: RetinaNet
+- [X] Train finetune Faster R-CNN on KITTI dataset
+- [X] Write a report about state-of-the-art object detection
 
 ## Tasks W1:
 
