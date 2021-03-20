@@ -163,6 +163,8 @@ def do_experiments_type1(cfg, predictor, train_images):
         # cv2_imshow(out.get_image()[:, :, ::-1])
         results.append(output_to_csv_line(outputs))
 
+    return results
+
 # IN TYPE 2: We use the second output format, focused on weights with panda formats
 def do_experiments_type2(cfg, predictor, train_images):
     results = []
@@ -217,13 +219,16 @@ RETINANET = "COCO-Detection/retinanet_R_50_FPN_1x.yaml"
 FASTER_RCNN_3 = "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"
 RETINANET_3 = "COCO-Detection/retinanet_R_101_FPN_3x.yaml"
 
+results = []
 
 ## 1: RetinaNet @ 0.25
 cfg, predictor = generate_predictor(0.25,RETINANET)
 t0 = time.time()
 results = do_experiments_type1(cfg, predictor, images)
+print(results)
 t1 = time.time()
 write_results('experiment1.csv',results)
+
 calculate_performance(t0,t1, len(images))
 
 ## 2: RetinaNet @ 0.5
