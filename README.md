@@ -7,6 +7,18 @@
   <li>Sergio Montoya: sergio.montoyadepaco@e-campus.uab.cat </li>
 </ul>
 
+## Tasks W3:
+
+- [x] Pre-trained object detection models inference in KITTI-MOTS images
+- [X] Evaluate pre-trained object detection models in KITTI-MOTS
+- [X] Train Faster R-CNN and RetinaNet
+- [X] Evaluate best trained model on KITTI-MOTS test set
+- [X] Write Experiments section in Overleaf
+
+Slides Week 3: https://docs.google.com/presentation/d/1Obou4UOhqejQlfawsThjlS4mL_GN0Mza8Ltk_6QzE-4
+
+Overleaf link: https://www.overleaf.com/read/xtkctxszqfqg
+
 ## Tasks W2:
 
 - [x] Get familiar with Detectron2 framework
