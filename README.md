@@ -7,6 +7,17 @@
   <li>Sergio Montoya: sergio.montoyadepaco@e-campus.uab.cat </li>
 </ul>
 
+## Tasks W4:
+
+- [x] Apply pre-trained Mask-RCNN models to KITTI-MOTS validation set
+- [X] Train Mask-RCNN model on KITTI-MOTS and MOTSChallenge training sets and evaluate on KITTIMOTS validation set
+- [X] Explore and analyze the impact of different hyperparameters
+- [X] Extend Related Work and Experiments section on your paper
+
+Slides Week 4: https://docs.google.com/presentation/d/1WPNzBd0V1IIXSYYVbpMzTDE83_wHwtC2_D_pBho0Atk
+
+Overleaf link: https://www.overleaf.com/read/xtkctxszqfqg
+
 ## Tasks W3:
 
 - [x] Pre-trained object detection models inference in KITTI-MOTS images
