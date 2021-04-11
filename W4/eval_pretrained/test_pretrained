@@ -1,0 +1,10 @@
+#!/bin/bash
+#SBATCH -n 4 # Number of cores
+#SBATCH -J test_pretrained_rn50 #job_name 
+#SBATCH --mem 14000 # 2GB solicitados.
+#SBATCH -p mhigh,mlow # or mlow Partition to submit to master low prioriy queue
+#SBATCH --gres gpu:1 # Para pedir Pascales MAX 8
+#SBATCH -o %x_%u_%j.out # File to which STDOUT will be written
+#SBATCH -e %x_%u_%j.err # File to which STDERR will be written
+
+/home/group01/anaconda3/envs/pytorch/bin/python ../kitti_project/eval_pretrained.py --model_name coco_r50fpn --batch_size 4 
