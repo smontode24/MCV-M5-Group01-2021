@@ -7,6 +7,21 @@
   <li>Sergio Montoya: sergio.montoyadepaco@e-campus.uab.cat </li>
 </ul>
 
+## Tasks W5:
+
+- [x] Apply pre-trained MaskRCNN and FasterRCNN on COCO in Out-of-Context Dataset
+- [X] Apply pre-trained MaskRCNN and FasterRCNN on COCO - Transplanting new objects by co-ocurrence
+- [X] Apply pre-trained MaskRCNN and FasterRCNN on COCO - Qualitatively Transplant
+- [X] Apply pre-trained MaskRCNN and FasterRCNN on COCO - Feature interference
+- [X] Apply pre-trained MaskRCNN and FasterRCNN on images using Style transfer 
+- [X] Write a final version of the paper
+
+Slides Week 5: https://docs.google.com/presentation/d/1rHi1MMkWgAg4BOk70edI8mIr1LeDZ3nog68FVPuFzEk/edit?usp=sharing
+
+Overleaf link: https://www.overleaf.com/read/xtkctxszqfqg
+
+Paper CVPR link: https://www.overleaf.com/read/dhmfvkmwncss
+
 ## Tasks W4:
 
 - [x] Apply pre-trained Mask-RCNN models to KITTI-MOTS validation set
