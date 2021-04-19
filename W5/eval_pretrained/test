@@ -1,0 +1,4 @@
+for f in $(ls ~/W3_random_search/); do
+  echo "File -> $f"
+done
+

@@ -1,0 +1,9 @@
+** fvcore version of PathManager will be deprecated soon. **
+** Please migrate to the version in iopath repo. **
+https://github.com/facebookresearch/iopath 
+
+** fvcore version of PathManager will be deprecated soon. **
+** Please migrate to the version in iopath repo. **
+https://github.com/facebookresearch/iopath 
+
+slurmstepd: error: *** JOB 20049 ON etse-75-51 CANCELLED AT 2021-03-26T18:14:03 ***

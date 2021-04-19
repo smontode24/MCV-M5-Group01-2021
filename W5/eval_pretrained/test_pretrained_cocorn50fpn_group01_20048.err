@@ -1,0 +1,20 @@
+** fvcore version of PathManager will be deprecated soon. **
+** Please migrate to the version in iopath repo. **
+https://github.com/facebookresearch/iopath 
+
+** fvcore version of PathManager will be deprecated soon. **
+** Please migrate to the version in iopath repo. **
+https://github.com/facebookresearch/iopath 
+
+Traceback (most recent call last):
+  File "../kitti_project/eval_pretrained.py", line 81, in <module>
+    main(parser)
+  File "../kitti_project/eval_pretrained.py", line 47, in main
+    testing = COCOEvaluator("ds_test", tasks=["bbox","segm"], distributed=True, output_dir=os.path.join(cfg.OUTPUT_DIR, "test_output"))
+  File "/home/group01/anaconda3/envs/pytorch/lib/python3.8/site-packages/detectron2/evaluation/coco_evaluation.py", line 110, in __init__
+    convert_to_coco_json(dataset_name, cache_path)
+  File "/home/group01/anaconda3/envs/pytorch/lib/python3.8/site-packages/detectron2/data/datasets/coco.py", line 439, in convert_to_coco_json
+    coco_dict = convert_to_coco_dict(dataset_name)
+  File "/home/group01/anaconda3/envs/pytorch/lib/python3.8/site-packages/detectron2/data/datasets/coco.py", line 354, in convert_to_coco_dict
+    raise TypeError(f"Unknown segmentation type {type(segmentation)}!")
+TypeError: Unknown segmentation type <class 'str'>!
